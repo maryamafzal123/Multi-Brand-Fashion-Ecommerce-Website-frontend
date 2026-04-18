@@ -125,7 +125,7 @@ export default function CartPage() {
           }}>{'✦ Checkout'}</p>
           <h1 style={{
             fontFamily: "'Jost', sans-serif",
-fontWeight: 400,            fontSize: 'clamp(2rem, 4vw, 3.5rem)',
+            fontSize: 'clamp(2rem, 4vw, 3.5rem)',
             fontWeight: 300, color: '#111',
           }}>
             {step === 'cart' ? 'Your Bag' : step === 'address' ? 'Delivery Address' : 'Payment'}
