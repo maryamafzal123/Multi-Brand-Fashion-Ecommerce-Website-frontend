@@ -37,25 +37,32 @@ export default function Navbar() {
   return (
     <nav style={{ position: 'fixed', top: 0, width: '100%', zIndex: 100, background: '#0a0a0a', borderBottom: '0.5px solid rgba(184,150,12,0.2)' }}>
       <style>{`
+        /* Desktop */
         .nb-navlinks { display: flex; }
         .nb-auth-desktop { display: flex; }
         .nb-mobile-login { display: none; }
+
+        /* Mobile (< 768px) */
         @media (max-width: 767px) {
           .nb-navlinks { display: none !important; }
           .nb-auth-desktop { display: none !important; }
           .nb-mobile-login { display: flex !important; align-items: center; }
           .nb-logo { position: absolute !important; left: 50% !important; transform: translateX(-50%) !important; }
           .nb-right-icons { gap: 0.8rem !important; }
+          .nb-left { min-width: 80px !important; }
         }
+
+        /* Tablet (768px - 1024px) */
         @media (min-width: 768px) and (max-width: 1024px) {
           .nb-navlinks { gap: 1.2rem !important; }
+          .nb-logo-text { font-size: 0.85rem !important; }
         }
       `}</style>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4vw', height: `${NAV_H}px`, position: 'relative' }}>
 
         {/* LEFT */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flex: 1 }}>
+        <div className="nb-left" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flex: 1, minWidth: '120px' }}>
           <button onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu"
             style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '5px', padding: '4px', flexShrink: 0 }}>
             <span style={{ display: 'block', width: '22px', height: '1px', background: '#b8960c' }} />
@@ -73,18 +80,22 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* CENTER — Text Logo */}
+        {/* CENTER — Text Logo absolutely centered */}
         <Link href="/" className="nb-logo" style={{ textDecoration: 'none', textAlign: 'center', flexShrink: 0, position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
           <TextLogo />
         </Link>
 
         {/* RIGHT */}
-        <div className="nb-right-icons" style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', flex: 1, justifyContent: 'flex-end' }}>
+        <div className="nb-right-icons" style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', flex: 1, justifyContent: 'flex-end', minWidth: '120px' }}>
+
+          {/* Search */}
           <button style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
           </button>
+
+          {/* Desktop auth — only renders after mount */}
           <div className="nb-auth-desktop" style={{ alignItems: 'center', gap: '1rem' }}>
-            {mounted && isAuthenticated ? (
+            {mounted ? (isAuthenticated ? (
               <>
                 <span style={{ fontSize: '0.68rem', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.6)' }}>{user?.full_name.split(' ')[0]}</span>
                 <Link href="/orders" style={{ fontSize: '0.68rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', textDecoration: 'none' }}>Orders</Link>
@@ -94,30 +105,41 @@ export default function Navbar() {
               <Link href="/auth/login" style={{ display: 'flex' }}>
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
               </Link>
+            )) : (
+              <Link href="/auth/login" style={{ display: 'flex' }}>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </Link>
             )}
           </div>
+
+          {/* Mobile login icon */}
           <div className="nb-mobile-login">
             <Link href="/auth/login" style={{ display: 'flex' }}>
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </Link>
           </div>
+
+          {/* Cart */}
           <button onClick={toggleCart} style={{ background: 'none', border: 'none', cursor: 'pointer', position: 'relative', display: 'flex', alignItems: 'center' }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-            {mounted && getTotalItems() > 0 && (
+            {mounted ? (getTotalItems() > 0 ? (
               <span style={{ position: 'absolute', top: '-5px', right: '-7px', background: '#b8960c', color: '#fff', fontSize: '0.52rem', fontWeight: 600, width: '15px', height: '15px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{getTotalItems()}</span>
-            )}
+            ) : null) : null}
           </button>
         </div>
       </div>
 
+      {/* Overlay */}
       {menuOpen && <div onClick={() => setMenuOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 98 }} />}
 
       {/* Slide-out menu */}
       <div style={{ position: 'fixed', top: 0, left: 0, bottom: 0, width: 'min(300px, 85vw)', background: '#0a0a0a', zIndex: 99, borderRight: '0.5px solid rgba(184,150,12,0.2)', transform: menuOpen ? 'translateX(0)' : 'translateX(-100%)', transition: 'transform 0.35s ease', padding: '2rem', overflowY: 'auto' }}>
         <button onClick={() => setMenuOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#b8960c', fontSize: '1.2rem', marginBottom: '2.5rem' }}>✕</button>
+
         <div style={{ textAlign: 'center', marginBottom: '3rem', paddingBottom: '2rem', borderBottom: '0.5px solid rgba(184,150,12,0.2)' }}>
           <TextLogo large />
         </div>
+
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           {[{ label: 'Home', href: '/' }, { label: "Women's Collection", href: '/products' }, { label: 'Top Brands', href: '/products' }, { label: 'About Us', href: '/#about' }, { label: 'Contact', href: '/contact' }].map(l => (
             <Link key={l.label} href={l.href} onClick={() => setMenuOpen(false)}
@@ -126,15 +148,16 @@ export default function Navbar() {
               onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.75)')}
             >{l.label}</Link>
           ))}
-          {mounted && isAuthenticated ? (
+          {mounted ? (isAuthenticated ? (
             <>
               <Link href="/orders" onClick={() => setMenuOpen(false)} style={{ fontSize: '0.72rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', textDecoration: 'none', padding: '1rem 0', borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>Orders</Link>
               <button onClick={() => { handleLogout(); setMenuOpen(false); }} style={{ fontSize: '0.72rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#b8960c', background: 'none', border: 'none', cursor: 'pointer', padding: '1rem 0', textAlign: 'left', borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>Logout</button>
             </>
           ) : (
             <Link href="/auth/login" onClick={() => setMenuOpen(false)} style={{ fontSize: '0.72rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#b8960c', textDecoration: 'none', padding: '1rem 0', borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>Login / Register</Link>
-          )}
+          )) : null}
         </div>
+
         <div style={{ position: 'absolute', bottom: '2rem', left: '2rem', right: '2rem' }}>
           <div style={{ borderTop: '0.5px solid rgba(184,150,12,0.2)', paddingTop: '1.2rem' }}>
             <div style={{ fontSize: '0.58rem', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '0.8rem' }}>Follow Us</div>
