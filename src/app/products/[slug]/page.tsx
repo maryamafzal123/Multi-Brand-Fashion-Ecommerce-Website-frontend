@@ -304,7 +304,7 @@ export default function ProductDetailPage() {
               paddingTop: '1.5rem',
               display: 'flex', flexDirection: 'column', gap: '0.2rem',
             }}>
-              {product.description.split('\n').map((line, i) =>
+            {(product.description || '').split('\n').map((line, i) =>
                 line.trim() === '' ? (
                   <div key={i} style={{ height: '0.6rem' }} />
                 ) : isHeading(line) ? (
