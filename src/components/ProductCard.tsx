@@ -74,7 +74,8 @@ if (added) {
               <Image
                 src={product.primary_image}
                 alt={product.name}
-                fill
+                  fill
+                  sizes="(max-width: 768px) 50vw, 25vw"
                 style={{ objectFit: 'cover', transition: 'transform 0.5s' }}
                 onMouseEnter={e => ((e.target as HTMLImageElement).style.transform = 'scale(1.05)')}
                 onMouseLeave={e => ((e.target as HTMLImageElement).style.transform = 'scale(1)')}

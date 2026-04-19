@@ -214,7 +214,7 @@ export default function CartPage() {
                   <div style={{ padding: '1.5rem', border: '1px solid rgba(196,169,125,0.3)', marginBottom: '2rem', background: '#fff' }}>
                     <p style={{ fontSize: '0.78rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#111', marginBottom: '1rem' }}>New Address</p>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                      {[{ key: 'street', placeholder: 'Street Address' }, { key: 'city', placeholder: 'City (e.g. Vehari)' }, { key: 'province', placeholder: 'Province (e.g. Punjab)' }, { key: 'postal_code', placeholder: 'Postal Code (optional)' }].map((field) => (
+                      {[{ key: 'street', placeholder: 'Street Address' }, { key: 'city', placeholder: 'City' }, { key: 'province', placeholder: 'Province (e.g. Punjab)' }].map((field) => (
                         <input key={field.key} placeholder={field.placeholder} value={newAddress[field.key as keyof typeof newAddress] as string} onChange={(e) => setNewAddress({ ...newAddress, [field.key]: e.target.value })} style={inputStyle} />
                       ))}
                       <div style={{ display: 'flex', gap: '1rem' }}>
