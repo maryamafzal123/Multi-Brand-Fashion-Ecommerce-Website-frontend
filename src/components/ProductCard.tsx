@@ -81,7 +81,7 @@ if (added) {
               />
             ) : (
               <Image
-                src={fixCloudinaryUrl(product.primary_image)}
+                src={product.primary_image}
                 alt={product.name}
                   fill
                   sizes="(max-width: 768px) 50vw, 25vw"
