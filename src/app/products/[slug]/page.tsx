@@ -41,9 +41,21 @@ function RelatedProducts({ categorySlug, currentSlug }: { categorySlug?: string;
         </h2>
         <div style={{ width: '50px', height: '0.5px', background: '#b8960c', margin: '1rem auto 0' }} />
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.5rem' }}>
-        {related.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
-      </div>
+<>
+  <style>{`
+    .related-products-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
+    }
+    @media (min-width: 768px) {
+      .related-products-grid { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+    }
+  `}</style>
+  <div className="related-products-grid">
+    {related.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
+  </div>
+</>
     </section>
   );
 }
