@@ -51,6 +51,22 @@ export default function ProductsPage() {
           grid-template-columns: repeat(2, 1fr);
           gap: 0.8rem;
         }
+        @media (max-width: 480px) {
+  .filter-sort-bar {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  .search-sort-row {
+    width: 100% !important;
+  }
+  .search-sort-row input {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .search-sort-row select {
+    width: 100% !important;
+  }
+}
         @media (min-width: 768px) {
           .products-grid { grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
         }
@@ -90,7 +106,7 @@ export default function ProductsPage() {
         </div>
 
         {/* Filters + Sort bar */}
-        <div style={{ padding: '0 6vw 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+        <div className="filter-sort-bar" style={{ padding: '0 6vw 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
             <span style={{ fontSize: '0.65rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#999', marginRight: '0.5rem' }}>Filter +</span>
             <button onClick={() => setFilter('all')} className={`filter-btn${filter === 'all' ? ' active' : ''}`}>All Brands</button>
@@ -98,16 +114,16 @@ export default function ProductsPage() {
               <button key={cat.id} onClick={() => setFilter(cat.slug)} className={`filter-btn${filter === cat.slug ? ' active' : ''}`}>{cat.name}</button>
             ))}
           </div>
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <div className="search-sort-row" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', minWidth: 0, flexShrink: 1 }}>
             <input type="text" placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)}
-              style={{ padding: '0.45rem 1rem', border: '0.5px solid #e8e4de', background: '#faf8f5', color: '#111', fontSize: '0.78rem', outline: 'none', fontFamily: 'Jost, sans-serif', width: '180px' }} />
-            <select value={sort} onChange={e => setSort(e.target.value)}
-              style={{ padding: '0.45rem 1rem', border: '0.5px solid #e8e4de', background: '#fff', color: '#111', fontSize: '0.72rem', letterSpacing: '0.12em', outline: 'none', fontFamily: 'Jost, sans-serif', cursor: 'pointer' }}>
-              <option value="newest">Sort: Newest</option>
-              <option value="price-asc">Price: Low to High</option>
-              <option value="price-desc">Price: High to Low</option>
-            </select>
-          </div>
+    style={{ padding: '0.45rem 0.8rem', border: '0.5px solid #e8e4de', background: '#faf8f5', color: '#111', fontSize: '0.78rem', outline: 'none', fontFamily: 'Jost, sans-serif', width: '120px', minWidth: 0 }} />
+  <select value={sort} onChange={e => setSort(e.target.value)}
+    style={{ padding: '0.45rem 0.5rem', border: '0.5px solid #e8e4de', background: '#fff', color: '#111', fontSize: '0.72rem', outline: 'none', fontFamily: 'Jost, sans-serif', cursor: 'pointer', minWidth: 0 }}>
+    <option value="newest">Sort: Newest</option>
+    <option value="price-asc">Price: Low to High</option>
+    <option value="price-desc">Price: High to Low</option>
+  </select>
+</div>
         </div>
       </div>
 

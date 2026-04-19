@@ -146,3 +146,6 @@ body {
   transition: color 0.2s;
 }
 .nav-link:hover { color: #b8960c; }
+html, body {
+  overflow-x: hidden !important;
+}

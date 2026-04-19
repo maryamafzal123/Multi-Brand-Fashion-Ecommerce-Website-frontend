@@ -10,7 +10,13 @@ interface Props { product: Product; index?: number; }
 
 const isVideo = (url: string) => /\.(mp4|mov|avi|webm|mkv)$/i.test(url);
 
+const fixCloudinaryUrl = (url: string) => {
+  if (!url) return url;
+  return url.replace('/raw/upload/', '/image/upload/');
+};
+
 export default function ProductCard({ product, index = 0 }: Props) {
+  
   const { addItem } = useCartStore();
 const handleAddToCart = (e: React.MouseEvent) => {
   e.preventDefault();
@@ -34,13 +40,16 @@ if (added) {
   return (
     <Link href={`/products/${product.slug}`} style={{ textDecoration: 'none' }}>
       <div style={{
-        background: '#fff',
-        cursor: 'pointer',
-        animation: `fadeUp 0.6s ease both`,
-        animationDelay: `${index * 0.06}s`,
-        border: '0.5px solid #f0ede8',
-        transition: 'all 0.3s',
-      }}
+  background: '#fff',
+  cursor: 'pointer',
+  animation: `fadeUp 0.6s ease both`,
+  animationDelay: `${index * 0.06}s`,
+  border: '0.5px solid #f0ede8',
+  transition: 'all 0.3s',
+  display: 'flex',
+  flexDirection: 'column',
+  height: '100%',
+}}
         onMouseEnter={e => {
           (e.currentTarget as HTMLDivElement).style.borderColor = '#d4b44a';
           (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 30px rgba(0,0,0,0.08)';
@@ -59,7 +68,7 @@ if (added) {
           {product.primary_image ? (
             isVideo(product.primary_image) ? (
               <video
-                src={product.primary_image}
+                src={fixCloudinaryUrl(product.primary_image)}
                 muted
                 loop
                 playsInline
@@ -72,7 +81,7 @@ if (added) {
               />
             ) : (
               <Image
-                src={product.primary_image}
+                src={fixCloudinaryUrl(product.primary_image)}
                 alt={product.name}
                   fill
                   sizes="(max-width: 768px) 50vw, 25vw"
@@ -134,7 +143,7 @@ if (added) {
         </div>
 
         {/* Info */}
-        <div style={{ padding: 'clamp(0.5rem, 2vw, 1rem)' }}>
+        <div style={{ padding: 'clamp(0.5rem, 2vw, 1rem)', flex: 1 }}>
           {product.category && (
             <div style={{ fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#b8960c', marginBottom: '0.35rem' }}>
               {product.category.name}
