@@ -133,7 +133,7 @@ if (added) {
         </div>
 
         {/* Info */}
-        <div style={{ padding: '1rem 1rem 1.2rem' }}>
+        <div style={{ padding: 'clamp(0.5rem, 2vw, 1rem)' }}>
           {product.category && (
             <div style={{ fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#b8960c', marginBottom: '0.35rem' }}>
               {product.category.name}
@@ -141,7 +141,7 @@ if (added) {
           )}
           <div style={{
             fontFamily: "'Jost', sans-serif",
-            fontSize: '0.88rem', fontWeight: 400, color: '#111',
+            fontSize: 'clamp(0.72rem, 2vw, 0.88rem)', fontWeight: 400, color: '#111',
             marginBottom: '0.5rem', letterSpacing: '0.02em',
           }}>
             {product.name}

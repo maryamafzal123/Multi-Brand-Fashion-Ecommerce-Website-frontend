@@ -226,9 +226,24 @@ export default function HomePage() {
             <p style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '1.5rem', color: '#ccc', fontStyle: 'italic' }}>No products found</p>
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(250px, 100%), 1fr))', gap: '1.5rem' }}>
-            {filtered.map((product, i) => <ProductCard key={product.id} product={product} index={i} />)}
-          </div>
+          <>
+  <style>{`
+    .home-products-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
+    }
+    @media (min-width: 768px) {
+      .home-products-grid { grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+    }
+    @media (min-width: 1024px) {
+      .home-products-grid { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+    }
+  `}</style>
+  <div className="home-products-grid">
+    {filtered.map((product, i) => <ProductCard key={product.id} product={product} index={i} />)}
+  </div>
+</>
         )}
         <div style={{ textAlign: 'center', marginTop: '3.5rem' }}>
           <Link href="/products" className="btn-black">Shop All Brands</Link>
@@ -288,7 +303,7 @@ export default function HomePage() {
           <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.95rem', fontWeight: 300, letterSpacing: '0.5em', lineHeight: 1 }}>
             <span style={{ color: '#fff' }}>BRAND</span>{' '}<span style={{ color: '#b8960c' }}>BAZAR</span>
           </div>
-          <div style={{ width: '70px', height: '1px', background: 'linear-gradient(to right, transparent, #b8960c, transparent)', margin: '5px auto' }} />
+    <div style={{ width: '70px', height: '0.5px', background: 'linear-gradient(to right, transparent, #b8960c, transparent)', margin: '5px auto', display: 'block' }} />
           <div style={{ fontSize: '0.42rem', letterSpacing: '0.45em', textTransform: 'uppercase', color: '#b8960c' }}>BY MIRSA</div>
         </div>
 

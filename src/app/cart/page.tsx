@@ -235,7 +235,7 @@ export default function CartPage() {
             {step === 'payment' && (
               <div>
                 <p style={{ fontSize: '0.78rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#111', marginBottom: '1.5rem' }}>Select Payment Method</p>
-                {[{ value: 'cod', label: 'Cash on Delivery', desc: 'Pay when your order arrives', icon: '🚚' }, { value: 'bank', label: 'Bank Transfer', desc: 'Transfer to our bank account', icon: '🏦' }].map((method) => (
+                {[{ value: 'cod', label: 'Cash on Delivery', desc: 'Pay when your order arrives', icon: '🚚' }, { value: 'bank', label: 'Bank Transfer', desc: 'Transfer to our bank account', icon: '🏛️' }].map((method) => (
                   <div key={method.value} onClick={() => setPaymentMethod(method.value as 'cod' | 'bank')} style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', padding: '1.2rem 1.5rem', marginBottom: '1rem', cursor: 'pointer', border: paymentMethod === method.value ? '2px solid #b8960c' : '1px solid rgba(196,169,125,0.3)', background: paymentMethod === method.value ? 'rgba(201,150,122,0.05)' : '#fff', transition: 'all 0.2s' }}>
                     <span style={{ fontSize: '1.8rem' }}>{method.icon}</span>
                     <div style={{ flex: 1 }}>

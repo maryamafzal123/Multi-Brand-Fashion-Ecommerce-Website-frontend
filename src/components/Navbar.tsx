@@ -87,12 +87,7 @@ export default function Navbar() {
 
         {/* RIGHT */}
         <div className="nb-right-icons" style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', flex: 1, justifyContent: 'flex-end', minWidth: '120px' }}>
-
-          {/* Search */}
-          <button style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          </button>
-
+          
           {/* Desktop auth — only renders after mount */}
           <div className="nb-auth-desktop" style={{ alignItems: 'center', gap: '1rem' }}>
             {mounted ? (isAuthenticated ? (
@@ -158,7 +153,7 @@ export default function Navbar() {
           )) : null}
         </div>
 
-        <div style={{ position: 'absolute', bottom: '2rem', left: '2rem', right: '2rem' }}>
+        <div style={{ marginTop: '2rem', paddingTop: '1rem' }}>
           <div style={{ borderTop: '0.5px solid rgba(184,150,12,0.2)', paddingTop: '1.2rem' }}>
             <div style={{ fontSize: '0.58rem', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '0.8rem' }}>Follow Us</div>
             <div style={{ display: 'flex', gap: '1rem' }}>

@@ -50,7 +50,7 @@ export default function ProductsPage() {
 
       {/* Header */}
       <div style={{ paddingTop: '72px', background: '#fff', borderBottom: '0.5px solid #e8e4de' }}>
-        <div style={{ padding: '4rem 6vw 2.5rem' }}>
+        <div style={{ padding: 'clamp(1.5rem, 4vw, 4rem) 6vw 2.5rem', textAlign: 'center' }}>
           {/* Breadcrumb */}
           <div style={{ fontSize: '0.65rem', letterSpacing: '0.18em', color: '#111', marginBottom: '1rem' }}>
             <Link href="/" style={{ color: '#111', textDecoration: 'none' }}
@@ -67,7 +67,8 @@ export default function ProductsPage() {
           }}>
             Shop By Brand
           </h1>
-          <div style={{ width: '200px', height: '0.7px', background: 'linear-gradient(to right, transparent, #b8960c, transparent)', margin: '0.8rem 0 0' }} />
+          {/* <div style={{ width: '200px', height: '0.7px', background: 'linear-gradient(to right, transparent, #b8960c, transparent)', margin: '0.8rem 0 0' }} /> */}
+          <div style={{ width: '100%', maxWidth: '200px', height: '0.7px', background: 'linear-gradient(to right, transparent, #b8960c, transparent)', margin: '0.8rem auto 0' }} />
         </div>
 
         {/* Filters + Sort bar */}
@@ -140,20 +141,30 @@ export default function ProductsPage() {
             <p style={{ fontSize: '0.65rem', color: '#aaa', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '2rem', fontFamily: "'Jost', sans-serif" }}>
               {filtered.length} item{filtered.length !== 1 ? 's' : ''} found
             </p>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-              gap: '1.5rem',
-            }}>
-              {filtered.map((product, i) => (
-                <ProductCard key={product.id} product={product} index={i} />
-              ))}
-            </div>
+            <>
+  <style>{`
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
+    }
+    @media (min-width: 768px) {
+      .products-grid { grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+    }
+    @media (min-width: 1024px) {
+      .products-grid { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+    }
+  `}</style>
+  <div className="products-grid">
+    {filtered.map((product, i) => (
+      <ProductCard key={product.id} product={product} index={i} />
+    ))}
+  </div>
+</>
           </>
         )}
       </div>
 
-      {/* Footer */}
       {/* Footer */}
 <footer style={{
   background: '#111', borderTop: '0.5px solid rgba(184,150,12,0.2)',
@@ -171,7 +182,7 @@ export default function ProductsPage() {
       {' '}
       <span style={{ color: '#b8960c' }}>BAZAR</span>
     </div>
-    <div style={{ width: '70px', height: '1px', background: 'linear-gradient(to right, transparent, #b8960c, transparent)', margin: '5px auto', display: 'block' }} />
+    <div style={{ width: '70px', height: '0.5px', background: 'linear-gradient(to right, transparent, #b8960c, transparent)', margin: '5px auto', display: 'block' }} />
     <div style={{ fontSize: '0.42rem', letterSpacing: '0.45em', textTransform: 'uppercase', color: '#b8960c' }}>
       BY MIRSA
     </div>
