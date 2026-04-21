@@ -49,9 +49,28 @@ export default function CartPage() {
     clearCart();
     toast.success('🎉 Order placed successfully!');
     router.push('/');
-  } catch (error) {
-    console.error(error);
-    toast.error('Failed to place order. Please try again.');
+  } catch (error: any) {
+    console.error('Order error:', error);
+    
+    // Show specific error message from backend
+    if (error.response?.data) {
+      const errorData = error.response.data;
+      
+      // Check for validation errors
+      if (errorData.items) {
+        toast.error(errorData.items[0] || 'Some items are out of stock');
+      } else if (errorData.guest_name || errorData.guest_email || errorData.guest_phone || errorData.guest_address) {
+        toast.error('Please check your information and try again');
+      } else if (typeof errorData === 'string') {
+        toast.error(errorData);
+      } else if (errorData.detail) {
+        toast.error(errorData.detail);
+      } else {
+        toast.error('Failed to place order. Please try again.');
+      }
+    } else {
+      toast.error('Failed to place order. Please check your connection.');
+    }
   } finally {
     setLoading(false);
   }

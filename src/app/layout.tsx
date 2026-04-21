@@ -35,3 +35,27 @@ export const metadata: Metadata = {
     images: ["/og-image.png"],
   },
 };
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className={jost.variable} style={{ margin: 0, padding: 0, fontFamily: 'Jost, sans-serif' }}>
+        <StoreHydration />
+        <Toaster position="top-center" />
+        {children}
+      </body>
+    </html>
+  );
+}
