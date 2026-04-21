@@ -8,28 +8,30 @@ const jost = Jost({ subsets: ['latin'], weight: ['300','400','500'], variable: '
 
 export const metadata: Metadata = {
   title: "Brand Bazar — Premium Women's Unstitched",
-  description: "Premium women's unstitched fabric — Lawn, Embroidered, Printed, Linen & Chiffon. Delivered across Pakistan.",
-  keywords: 'women unstitched, lawn suits, embroidered fabric, Pakistan fashion, Brand Bazar, by Mirsa',
-};
+  description:
+    "Premium women's unstitched fabric — Lawn, Embroidered, Printed, Linen & Chiffon. Delivered across Pakistan.",
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
-      </head>
-      <body className={jost.variable} suppressHydrationWarning>
-        <StoreHydration />
-        {children}
-        <Toaster position="top-right" toastOptions={{
-          duration: 2500,
-          style: {
-            background: '#111', color: '#fff',
-            fontSize: '0.72rem', letterSpacing: '0.08em',
-            borderRadius: '0', borderLeft: '2px solid #b8960c',
-          },
-        }} />
-      </body>
-    </html>
-  );
-}
+  openGraph: {
+    title: "Brand Bazar — Premium Women's Unstitched",
+    description:
+      "Premium women's unstitched fabric — Lawn, Embroidered, Printed, Linen & Chiffon.",
+    url: "https://brandbazarbymirsa.com",
+    siteName: "Brand Bazar",
+    images: [
+      {
+        url: "/og-image.png", // IMPORTANT
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: "en_PK",
+    type: "website",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Brand Bazar",
+    description: "Premium women's unstitched collection",
+    images: ["/og-image.png"],
+  },
+};
