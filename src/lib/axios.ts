@@ -24,7 +24,6 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       Cookies.remove('access_token');
       Cookies.remove('refresh_token');
-      window.location.href = '/auth/login';
     }
     return Promise.reject(error);
   }
