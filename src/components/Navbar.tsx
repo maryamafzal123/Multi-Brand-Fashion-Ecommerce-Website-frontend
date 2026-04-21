@@ -3,18 +3,15 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useCartStore } from '@/store/cartStore';
-import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
   const { getTotalItems, toggleCart } = useCartStore();
-  const { isAuthenticated, user, logout } = useAuthStore();
-  const router = useRouter();
+
   const [mounted, setMounted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
-  const handleLogout = () => { logout(); router.push('/'); };
 
   const TextLogo = ({ large = false }: { large?: boolean }) => (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -39,14 +36,10 @@ export default function Navbar() {
       <style>{`
         /* Desktop */
         .nb-navlinks { display: flex; }
-        .nb-auth-desktop { display: flex; }
-        .nb-mobile-login { display: none; }
 
         /* Mobile (< 768px) */
         @media (max-width: 767px) {
           .nb-navlinks { display: none !important; }
-          .nb-auth-desktop { display: none !important; }
-          .nb-mobile-login { display: flex !important; align-items: center; }
           .nb-logo { position: absolute !important; left: 50% !important; transform: translateX(-50%) !important; }
           .nb-right-icons { gap: 0.8rem !important; }
           .nb-left { min-width: 80px !important; }
@@ -87,32 +80,6 @@ export default function Navbar() {
 
         {/* RIGHT */}
         <div className="nb-right-icons" style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', flex: 1, justifyContent: 'flex-end', minWidth: '120px' }}>
-          
-          {/* Desktop auth — only renders after mount */}
-          <div className="nb-auth-desktop" style={{ alignItems: 'center', gap: '1rem' }}>
-            {mounted ? (isAuthenticated ? (
-              <>
-                <span style={{ fontSize: '0.68rem', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.6)' }}>{user?.full_name.split(' ')[0]}</span>
-                <Link href="/orders" style={{ fontSize: '0.68rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', textDecoration: 'none' }}>Orders</Link>
-                <button onClick={handleLogout} style={{ fontSize: '0.68rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#b8960c', background: 'none', border: 'none', cursor: 'pointer' }}>Logout</button>
-              </>
-            ) : (
-              <Link href="/auth/login" style={{ display: 'flex' }}>
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              </Link>
-            )) : (
-              <Link href="/auth/login" style={{ display: 'flex' }}>
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              </Link>
-            )}
-          </div>
-
-          {/* Mobile login icon */}
-          <div className="nb-mobile-login">
-            <Link href="/auth/login" style={{ display: 'flex' }}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </Link>
-          </div>
 
           {/* Cart */}
           <button onClick={toggleCart} style={{ background: 'none', border: 'none', cursor: 'pointer', position: 'relative', display: 'flex', alignItems: 'center' }}>
@@ -143,14 +110,7 @@ export default function Navbar() {
               onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.75)')}
             >{l.label}</Link>
           ))}
-          {mounted ? (isAuthenticated ? (
-            <>
-              <Link href="/orders" onClick={() => setMenuOpen(false)} style={{ fontSize: '0.72rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', textDecoration: 'none', padding: '1rem 0', borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>Orders</Link>
-              <button onClick={() => { handleLogout(); setMenuOpen(false); }} style={{ fontSize: '0.72rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#b8960c', background: 'none', border: 'none', cursor: 'pointer', padding: '1rem 0', textAlign: 'left', borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>Logout</button>
-            </>
-          ) : (
-            <Link href="/auth/login" onClick={() => setMenuOpen(false)} style={{ fontSize: '0.72rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#b8960c', textDecoration: 'none', padding: '1rem 0', borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>Login / Register</Link>
-          )) : null}
+
         </div>
 
         <div style={{ marginTop: '2rem', paddingTop: '1rem' }}>

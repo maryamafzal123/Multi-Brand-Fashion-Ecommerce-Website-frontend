@@ -13,22 +13,15 @@ export default function CartSidebar() {
     removeItem, updateQuantity,
     getTotalPrice, clearCart,
   } = useCartStore();
-  const { isAuthenticated } = useAuthStore();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
-  const handleCheckout = () => {
-    if (!isAuthenticated) {
-      toast.error('Please login to checkout');
-      router.push('/auth/login');
-      closeCart();
-      return;
-    }
-    router.push('/cart');
-    closeCart();
-  };
+const handleCheckout = () => {
+  router.push('/cart');
+  closeCart();
+};
 
   if (!mounted) return null;
 

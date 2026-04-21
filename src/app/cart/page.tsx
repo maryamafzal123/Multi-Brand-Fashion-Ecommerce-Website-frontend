@@ -1,6 +1,5 @@
 'use client';
-
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -8,60 +7,55 @@ import toast from 'react-hot-toast';
 import Navbar from '@/components/Navbar';
 import CartSidebar from '@/components/CartSidebar';
 import { useCartStore } from '@/store/cartStore';
-import { useAuthStore } from '@/store/authStore';
-import { Address } from '@/types';
 import api from '@/lib/axios';
 
 export default function CartPage() {
   const router = useRouter();
   const { items, removeItem, updateQuantity, getTotalPrice, clearCart } = useCartStore();
-  const { isAuthenticated } = useAuthStore();
-
   const [step, setStep] = useState<'cart' | 'address' | 'payment'>('cart');
-  const [addresses, setAddresses] = useState<Address[]>([]);
-  const [selectedAddress, setSelectedAddress] = useState<number | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<'cod' | 'bank'>('cod');
   const [loading, setLoading] = useState(false);
-  const [showAddAddress, setShowAddAddress] = useState(false);
-  const [newAddress, setNewAddress] = useState({
-    label: 'Home', street: '', city: '', province: '', postal_code: '', is_default: true,
+
+  // Guest form state
+  const [guestInfo, setGuestInfo] = useState({
+    email: '',
+    full_name: '',
+    phone: '',
+    street: '',
+    city: '',
+    province: '',
   });
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      api.get('/api/auth/addresses/').then((res) => {
-        const data = Array.isArray(res.data) ? res.data : res.data.results || [];
-        setAddresses(data);
-        const def = data.find((a: Address) => a.is_default);
-        if (def) setSelectedAddress(def.id);
-      }).catch(() => {});
-    }
-  }, [isAuthenticated]);
-
-  const handleAddAddress = async () => {
-    try {
-      const res = await api.post('/api/auth/addresses/', newAddress);
-      setAddresses([...addresses, res.data]);
-      setSelectedAddress(res.data.id);
-      setShowAddAddress(false);
-      toast.success('Address saved!');
-    } catch { toast.error('Failed to save address.'); }
-  };
-
-  const handlePlaceOrder = async () => {
-    if (!isAuthenticated) { toast.error('Please login first!'); router.push('/auth/login'); return; }
-    if (!selectedAddress) { toast.error('Please select a delivery address!'); return; }
-    if (items.length === 0) { toast.error('Your cart is empty!'); return; }
-    setLoading(true);
-    try {
-      const orderItems = items.map((item) => ({ product_id: item.id, variant_id: item.variant?.id || null, quantity: item.quantity }));
-      await api.post('/api/orders/', { shipping_address_id: selectedAddress, payment_method: paymentMethod, items: orderItems });
-      clearCart();
-      toast.success(paymentMethod === 'cod' ? 'Order placed successfully!' : 'Order placed! Please send payment screenshot on WhatsApp.');
-      router.push('/orders');
-    } catch { toast.error('Failed to place order. Please try again.'); }
-    finally { setLoading(false); }
-  };
+ const handlePlaceOrder = async () => {
+  if (items.length === 0) { toast.error('Your cart is empty!'); return; }
+  if (!guestInfo.email || !guestInfo.full_name || !guestInfo.phone || !guestInfo.street || !guestInfo.city || !guestInfo.province) {
+    toast.error('Please fill all fields!'); return;
+  }
+  setLoading(true);
+  try {
+    const orderItems = items.map((item) => ({
+      product_id: item.id,
+      variant_id: item.variant?.id || null,
+      quantity: item.quantity,
+    }));
+    await api.post('/api/orders/', {
+      guest_name: guestInfo.full_name,
+      guest_email: guestInfo.email,
+      guest_phone: guestInfo.phone,
+      guest_address: `${guestInfo.street}, ${guestInfo.city}, ${guestInfo.province}`,
+      payment_method: paymentMethod,
+      items: orderItems,
+    });
+    clearCart();
+    toast.success('🎉 Order placed successfully!');
+    router.push('/');
+  } catch (error) {
+    console.error(error);
+    toast.error('Failed to place order. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const inputStyle = {
     width: '100%', padding: '0.9rem 1.2rem', background: '#faf8f5',
@@ -83,58 +77,44 @@ export default function CartPage() {
           padding: 3rem 6vw 6rem;
           align-items: start;
         }
-        .cart-summary {
-          position: sticky;
-          top: 100px;
-        }
-        .cart-header {
-          padding: 5rem 6vw 3rem;
-        }
+        .cart-summary { position: sticky; top: 100px; }
+        .cart-header { padding: 2rem 6vw 1.5rem; }
         @media (max-width: 767px) {
           .cart-layout {
             grid-template-columns: 1fr !important;
             gap: 2rem !important;
             padding: 1.5rem 5vw 4rem !important;
           }
-          .cart-summary {
-            position: static !important;
-            order: -1;
-          }
-          .cart-header {
-            padding: 3rem 5vw 2rem !important;
-          }
-          .cart-steps {
-            gap: 1rem !important;
-          }
-          .cart-step-label {
-            display: none;
-          }
-          .cart-item {
-            gap: 1rem !important;
-          }
-          .cart-item-img {
-            width: 80px !important;
-            height: 80px !important;
-          }
+          .cart-summary { position: static !important; order: -1; }
+          .cart-header { padding: 1.5rem 5vw 1rem !important; }
+          .cart-steps { gap: 1rem !important; }
+          .cart-step-label { display: none; }
+          .cart-item { gap: 1rem !important; }
+          .cart-item-img { width: 80px !important; height: 80px !important; }
         }
         @media (min-width: 768px) and (max-width: 1024px) {
-          .cart-layout {
-            grid-template-columns: 1fr 300px !important;
-            gap: 2rem !important;
-          }
+          .cart-layout { grid-template-columns: 1fr 300px !important; gap: 2rem !important; }
         }
+        .google-btn {
+          width: 100%; padding: 0.9rem; background: #fff;
+          border: 1px solid rgba(196,169,125,0.4); color: #111;
+          fontSize: 0.88rem; cursor: pointer; display: flex;
+          align-items: center; justify-content: center; gap: 0.8rem;
+          font-family: Jost, sans-serif; transition: all 0.2s;
+          letter-spacing: 0.05em;
+        }
+        .google-btn:hover { border-color: #b8960c; background: #faf8f5; }
       `}</style>
 
       <Navbar />
       <CartSidebar />
 
       <div style={{ paddingTop: '72px', minHeight: '100vh', background: '#faf8f5' }}>
-
         {/* Header */}
         <div className="cart-header" style={{ background: 'linear-gradient(135deg, #f5f0e8 0%, #faf8f5 100%)' }}>
           <p style={{ fontSize: '0.7rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: '#b8960c', marginBottom: '0.9rem' }}>✦ Checkout</p>
-          <h1 style={{ fontFamily: "'Jost', sans-serif", fontSize: 'clamp(1.8rem, 4vw, 3.5rem)', fontWeight: 300, color: '#111' }}>
-            {step === 'cart' ? 'Your Bag' : step === 'address' ? 'Delivery Address' : 'Payment'}
+          <h1 style={{ fontFamily: "'Jost', sans-serif", fontSize: 'clamp(1.2rem, 2.5vw, 2rem)', fontWeight: 300, color: '#111' }}>
+            {step === 'cart' ? 'Your Bag' : step === 'address' ? 'Delivery Details' : 'Payment'}
           </h1>
           <div className="cart-steps" style={{ display: 'flex', gap: '2rem', marginTop: '1.5rem' }}>
             {['cart', 'address', 'payment'].map((s, i) => (
@@ -143,7 +123,7 @@ export default function CartPage() {
                   {['cart', 'address', 'payment'].indexOf(step) > i ? '✓' : i + 1}
                 </div>
                 <span className="cart-step-label" style={{ fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: step === s ? '#111' : '#aaa' }}>
-                  {s === 'cart' ? 'Bag' : s === 'address' ? 'Address' : 'Payment'}
+                  {s === 'cart' ? 'Bag' : s === 'address' ? 'Details' : 'Payment'}
                 </span>
               </div>
             ))}
@@ -151,16 +131,16 @@ export default function CartPage() {
         </div>
 
         <div className="cart-layout">
-
-          {/* LEFT — Steps */}
+          {/* LEFT */}
           <div>
+
             {/* STEP 1: CART */}
             {step === 'cart' && (
               <div>
                 {items.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '4rem 0' }}>
                     <p style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '1.8rem', fontStyle: 'italic', color: '#aaa', marginBottom: '1rem' }}>Your bag is empty</p>
-                    <Link href="/products" className="btn-primary">Continue Shopping</Link>
+                    <Link href="/products" style={{ padding: '0.8rem 2rem', background: '#111', color: '#fff', textDecoration: 'none', fontSize: '0.78rem', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Continue Shopping</Link>
                   </div>
                 ) : (
                   items.map((item) => (
@@ -171,11 +151,17 @@ export default function CartPage() {
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{ fontFamily: "'Jost', sans-serif", fontSize: '0.95rem', fontWeight: 400, color: '#111', marginBottom: '0.3rem' }}>{item.name}</p>
                         {item.variant && <p style={{ fontSize: '0.72rem', color: '#b8960c', marginBottom: '0.3rem' }}>{item.variant.size}{item.variant.color && ` / ${item.variant.color}`}</p>}
-                        {item.age_range && <div style={{ fontSize: '0.8rem', color: '#8b5e3c' }}>Age: {item.age_range} yrs</div>}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.5rem' }}>
                           <button onClick={() => updateQuantity(item.id, item.quantity - 1, item.variant?.id)} style={{ width: '28px', height: '28px', background: '#faf8f5', border: 'none', cursor: 'pointer', fontSize: '1rem' }}>−</button>
                           <span style={{ fontSize: '0.9rem', minWidth: '20px', textAlign: 'center' }}>{item.quantity}</span>
-                          <button onClick={() => updateQuantity(item.id, item.quantity + 1, item.variant?.id)} style={{ width: '28px', height: '28px', background: '#faf8f5', border: 'none', cursor: 'pointer', fontSize: '1rem' }}>+</button>
+                        <button onClick={() => {
+                          const maxStock = item.stock ?? 0;
+                          if (item.quantity >= maxStock) {
+                            toast.error(`Max quantity reached! Only ${maxStock} available.`);
+                            return;
+                          }
+                          updateQuantity(item.id, item.quantity + 1, item.variant?.id);
+                          }} style={{ width: '28px', height: '28px', background: '#faf8f5', border: 'none', cursor: 'pointer', fontSize: '1rem' }}>+</button>
                         </div>
                       </div>
                       <div style={{ textAlign: 'right', flexShrink: 0 }}>
@@ -186,47 +172,42 @@ export default function CartPage() {
                   ))
                 )}
                 {items.length > 0 && (
-                  <button onClick={() => { if (!isAuthenticated) { toast.error('Please login first!'); router.push('/auth/login'); return; } setStep('address'); }}
+                  <button onClick={() => setStep('address')}
                     style={{ marginTop: '2rem', padding: '1rem 3rem', background: '#111', color: '#faf8f5', fontSize: '0.78rem', letterSpacing: '0.18em', textTransform: 'uppercase', border: 'none', cursor: 'pointer', width: '100%' }}>
-                    Continue to Address
+                    Continue to Details
                   </button>
                 )}
               </div>
             )}
 
-            {/* STEP 2: ADDRESS */}
+            {/* STEP 2: ADDRESS — Guest Form */}
             {step === 'address' && (
               <div>
-                {addresses.map((addr) => (
-                  <div key={addr.id} onClick={() => setSelectedAddress(addr.id)} style={{ padding: '1.5rem', marginBottom: '1rem', cursor: 'pointer', border: selectedAddress === addr.id ? '2px solid #b8960c' : '1px solid rgba(196,169,125,0.3)', background: selectedAddress === addr.id ? 'rgba(201,150,122,0.05)' : '#fff', transition: 'all 0.2s' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                      <span style={{ fontSize: '0.72rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#b8960c' }}>{addr.label}</span>
-                      {selectedAddress === addr.id && <span style={{ color: '#b8960c', fontSize: '0.8rem' }}>✓ Selected</span>}
-                    </div>
-                    <p style={{ fontSize: '0.9rem', color: '#111', lineHeight: 1.6 }}>{addr.street}, {addr.city}, {addr.province}</p>
+                <p style={{ fontSize: '0.78rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#111', marginBottom: '1.5rem' }}>Contact & Delivery Details</p>
+
+                
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                  <input placeholder="Email Address *" type="email" value={guestInfo.email} onChange={e => setGuestInfo({...guestInfo, email: e.target.value})} style={inputStyle} />
+                  <input placeholder="Full Name *" value={guestInfo.full_name} onChange={e => setGuestInfo({...guestInfo, full_name: e.target.value})} style={inputStyle} />
+                  <input placeholder="Phone Number * (e.g. 03001234567)" value={guestInfo.phone} onChange={e => setGuestInfo({...guestInfo, phone: e.target.value})} style={inputStyle} />
+                  <input placeholder="Street Address *" value={guestInfo.street} onChange={e => setGuestInfo({...guestInfo, street: e.target.value})} style={inputStyle} />
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+                    <input placeholder="City *" value={guestInfo.city} onChange={e => setGuestInfo({...guestInfo, city: e.target.value})} style={inputStyle} />
+                    <input placeholder="Province *" value={guestInfo.province} onChange={e => setGuestInfo({...guestInfo, province: e.target.value})} style={inputStyle} />
                   </div>
-                ))}
-                {!showAddAddress ? (
-                  <button onClick={() => setShowAddAddress(true)} style={{ padding: '0.8rem 1.5rem', background: 'transparent', border: '1px dashed rgba(196,169,125,0.5)', color: '#b8960c', fontSize: '0.78rem', letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer', width: '100%', marginBottom: '2rem' }}>
-                    + Add New Address
-                  </button>
-                ) : (
-                  <div style={{ padding: '1.5rem', border: '1px solid rgba(196,169,125,0.3)', marginBottom: '2rem', background: '#fff' }}>
-                    <p style={{ fontSize: '0.78rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#111', marginBottom: '1rem' }}>New Address</p>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                      {[{ key: 'street', placeholder: 'Street Address' }, { key: 'city', placeholder: 'City' }, { key: 'province', placeholder: 'Province (e.g. Punjab)' }].map((field) => (
-                        <input key={field.key} placeholder={field.placeholder} value={newAddress[field.key as keyof typeof newAddress] as string} onChange={(e) => setNewAddress({ ...newAddress, [field.key]: e.target.value })} style={inputStyle} />
-                      ))}
-                      <div style={{ display: 'flex', gap: '1rem' }}>
-                        <button onClick={handleAddAddress} style={{ flex: 1, padding: '0.9rem', background: '#111', color: '#faf8f5', fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', border: 'none', cursor: 'pointer' }}>Save Address</button>
-                        <button onClick={() => setShowAddAddress(false)} style={{ padding: '0.9rem 1.5rem', background: 'transparent', color: '#111', fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', border: '1px solid rgba(58,42,32,0.2)', cursor: 'pointer' }}>Cancel</button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                <div style={{ display: 'flex', gap: '1rem' }}>
+                </div>
+
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
                   <button onClick={() => setStep('cart')} style={{ padding: '1rem 2rem', background: 'transparent', color: '#111', fontSize: '0.78rem', letterSpacing: '0.15em', textTransform: 'uppercase', border: '1px solid rgba(58,42,32,0.2)', cursor: 'pointer' }}>Back</button>
-                  <button onClick={() => { if (!selectedAddress) { toast.error('Please select an address!'); return; } setStep('payment'); }} style={{ flex: 1, padding: '1rem', background: '#111', color: '#faf8f5', fontSize: '0.78rem', letterSpacing: '0.18em', textTransform: 'uppercase', border: 'none', cursor: 'pointer' }}>Continue to Payment</button>
+                  <button onClick={() => {
+                    if (!guestInfo.email || !guestInfo.full_name || !guestInfo.phone || !guestInfo.street || !guestInfo.city || !guestInfo.province) {
+                      toast.error('Please fill all fields!'); return;
+                    }
+                    setStep('payment');
+                  }} style={{ flex: 1, padding: '1rem', background: '#111', color: '#faf8f5', fontSize: '0.78rem', letterSpacing: '0.18em', textTransform: 'uppercase', border: 'none', cursor: 'pointer' }}>
+                    Continue to Payment
+                  </button>
                 </div>
               </div>
             )}
@@ -235,7 +216,10 @@ export default function CartPage() {
             {step === 'payment' && (
               <div>
                 <p style={{ fontSize: '0.78rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#111', marginBottom: '1.5rem' }}>Select Payment Method</p>
-                {[{ value: 'cod', label: 'Cash on Delivery', desc: 'Pay when your order arrives', icon: '🚚' }, { value: 'bank', label: 'Bank Transfer', desc: 'Transfer to our bank account', icon: '🏛️' }].map((method) => (
+                {[
+                  { value: 'cod', label: 'Cash on Delivery', desc: 'Pay when your order arrives', icon: '🚚' },
+                  { value: 'bank', label: 'Bank Transfer', desc: 'Transfer to our bank account', icon: '🏛️' }
+                ].map((method) => (
                   <div key={method.value} onClick={() => setPaymentMethod(method.value as 'cod' | 'bank')} style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', padding: '1.2rem 1.5rem', marginBottom: '1rem', cursor: 'pointer', border: paymentMethod === method.value ? '2px solid #b8960c' : '1px solid rgba(196,169,125,0.3)', background: paymentMethod === method.value ? 'rgba(201,150,122,0.05)' : '#fff', transition: 'all 0.2s' }}>
                     <span style={{ fontSize: '1.8rem' }}>{method.icon}</span>
                     <div style={{ flex: 1 }}>
@@ -301,7 +285,6 @@ export default function CartPage() {
         </div>
       </div>
 
-      {/* Footer */}
       <footer style={{ background: '#111', borderTop: '0.5px solid rgba(184,150,12,0.2)', padding: '1.5rem 6vw', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.9rem', fontWeight: 300, letterSpacing: '0.4em', textTransform: 'uppercase' }}>
@@ -310,7 +293,7 @@ export default function CartPage() {
           <div style={{ height: '0.5px', background: 'linear-gradient(to right, transparent, #b8960c, transparent)', margin: '3px auto', width: '70px' }} />
           <div style={{ fontSize: '0.4rem', letterSpacing: '0.35em', color: '#b8960c', textTransform: 'uppercase' }}>BY MIRSA</div>
         </div>
-        <div style={{ fontSize: '0.65rem', color: '#444', letterSpacing: '0.1em' }}>© 2026 Brand Bazar. All rights reserved.</div>
+        <div style={{ fontSize: '0.65rem', color: '#444', letterSpacing: '0.1em', fontStyle: 'normal' }}>© 2026 Brand Bazar. All rights reserved.</div>
       </footer>
     </>
   );
