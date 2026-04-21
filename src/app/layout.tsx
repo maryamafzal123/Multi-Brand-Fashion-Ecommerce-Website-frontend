@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     siteName: "Brand Bazar",
     images: [
       {
-        url: "/og-image.png", // IMPORTANT
+        url: "/og-image.jpeg", // IMPORTANT
         width: 1200,
         height: 630,
       },
