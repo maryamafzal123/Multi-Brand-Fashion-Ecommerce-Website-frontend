@@ -284,7 +284,7 @@ export default function ProductDetailPage() {
               {product.in_stock ? 'Add to Bag' : 'Out of Stock'}
             </button>
 
-            <a href={`https://wa.me/923336262574?text=Hi! I want to order: ${product.name}`} target="_blank" rel="noopener noreferrer"
+            <a href={`https://wa.me/923332742727?text=Hi! I want to order: ${product.name}`} target="_blank" rel="noopener noreferrer"
               style={{ display: 'block', width: '100%', padding: '1.1rem', background: '#25d366', color: '#fff', fontSize: '0.78rem', letterSpacing: '0.18em', textTransform: 'uppercase', border: 'none', cursor: 'pointer', textAlign: 'center', textDecoration: 'none' }}>
               💬 Order via WhatsApp
             </a>
