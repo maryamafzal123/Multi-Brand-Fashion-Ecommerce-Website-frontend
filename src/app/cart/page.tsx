@@ -258,7 +258,7 @@ export default function CartPage() {
                       </div>
                     ))}
                     <div style={{ marginTop: '1rem', padding: '0.8rem', background: 'rgba(37,211,102,0.08)', border: '1px solid rgba(37,211,102,0.2)', fontSize: '0.78rem', color: '#10b981', lineHeight: 1.6 }}>
-                      After transfer, send payment screenshot on WhatsApp:<br /><strong>+92 333 6262574</strong>
+                      After transfer, send payment screenshot on WhatsApp:<br /><strong>+92 333 2742727</strong>
                     </div>
                   </div>
                 )}

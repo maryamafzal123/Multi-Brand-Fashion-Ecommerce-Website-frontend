@@ -55,13 +55,13 @@ export default function ContactPage() {
             maxWidth: '500px', letterSpacing: '0.03em',
           }}>
             For order updates or any concerns regarding the quality of your received order,
-            please contact us on our official WhatsApp number: <strong>+92 333 6262574</strong>.
+            please contact us on our official WhatsApp number: <strong>+92 333 2742727</strong>.
             Our standard response time is up to 48 hours. We appreciate your patience
             and will assist you as promptly as possible.
           </p>
 
           <a
-            href="https://wa.me/923336262574"
+            href="https://wa.me/923332742727"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-black"

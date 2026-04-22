@@ -22,7 +22,7 @@ export default function WhatsAppButton() {
       }}>
         Order on WhatsApp
       </span>
-      <a href="https://wa.me/923336262574" target="_blank" rel="noopener noreferrer" style={{
+      <a href="https://wa.me/923332742727" target="_blank" rel="noopener noreferrer" style={{
         width: '52px', height: '52px', borderRadius: '50%',
         background: '#25d366',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
