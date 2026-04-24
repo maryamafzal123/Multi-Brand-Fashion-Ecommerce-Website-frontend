@@ -9,6 +9,7 @@ import { Product, Category } from '@/types';
 import api from '@/lib/axios';
 import Link from 'next/link';
 
+
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -16,19 +17,25 @@ export default function ProductsPage() {
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('newest');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const pageSize = 20;
+  const totalPages = Math.ceil(totalCount / pageSize);
 
   useEffect(() => {
-    Promise.all([
-      api.get('/api/products/'),
-      api.get('/api/products/categories/'),
-    ]).then(([productsRes, categoriesRes]) => {
-      setProducts(productsRes.data.results || productsRes.data);
-      setCategories(categoriesRes.data.results || categoriesRes.data);
-    }).catch(() => {
-      setProducts([]);
-      setCategories([]);
-    }).finally(() => setLoading(false));
-  }, []);
+  setLoading(true);
+  Promise.all([
+    api.get(`/api/products/?page=${currentPage}`),
+    api.get('/api/products/categories/'),
+  ]).then(([productsRes, categoriesRes]) => {
+    setProducts(productsRes.data.results || productsRes.data);
+    setTotalCount(productsRes.data.count || 0);
+    setCategories(categoriesRes.data.results || categoriesRes.data);
+  }).catch(() => {
+    setProducts([]);
+    setCategories([]);
+  }).finally(() => setLoading(false));
+}, [currentPage]);
 
   const filtered = products
     .filter(p => {
@@ -162,10 +169,33 @@ export default function ProductsPage() {
                 <ProductCard key={product.id} product={product} index={i} />
               ))}
             </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', marginTop: '3rem', flexWrap: 'wrap' }}>
+                <button
+                  onClick={() => { setCurrentPage(p => Math.max(1, p - 1)); window.scrollTo(0, 0); }}
+                  disabled={currentPage === 1}
+                  style={{ padding: '0.6rem 1.2rem', background: currentPage === 1 ? '#f0ede8' : '#111', color: currentPage === 1 ? '#aaa' : '#fff', border: 'none', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', fontSize: '0.72rem', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+                  ← Prev
+                </button>
+                {[...Array(totalPages)].map((_, i) => (
+                  <button key={i + 1} onClick={() => { setCurrentPage(i + 1); window.scrollTo(0, 0); }}
+                    style={{ width: '36px', height: '36px', background: currentPage === i + 1 ? '#b8960c' : '#fff', color: currentPage === i + 1 ? '#fff' : '#111', border: '0.5px solid #e8e4de', cursor: 'pointer', fontSize: '0.78rem', fontWeight: currentPage === i + 1 ? 600 : 400 }}>
+                    {i + 1}
+                  </button>
+                ))}
+                <button
+                  onClick={() => { setCurrentPage(p => Math.min(totalPages, p + 1)); window.scrollTo(0, 0); }}
+                  disabled={currentPage === totalPages}
+                  style={{ padding: '0.6rem 1.2rem', background: currentPage === totalPages ? '#f0ede8' : '#111', color: currentPage === totalPages ? '#aaa' : '#fff', border: 'none', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer', fontSize: '0.72rem', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+                  Next →
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>
-
       {/* Footer */}
       <footer style={{ background: '#111', borderTop: '0.5px solid rgba(184,150,12,0.2)', padding: '2rem 6vw', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
