@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     siteName: "Brand Bazar",
     images: [
       {
-        url: "https://brandbazarbymirsa.com/og-image.png", // IMPORTANT
+        url: "https://brandbazarbymirsa.com/og-image.jpeg", // IMPORTANT
         width: 1200,
         height: 630,
       },
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Brand Bazar",
     description: "Premium women's unstitched collection",
-    images: ["https://brandbazarbymirsa.com/og-image.png"],
+    images: ["https://brandbazarbymirsa.com/og-image.jpeg"],
   },
 };
 

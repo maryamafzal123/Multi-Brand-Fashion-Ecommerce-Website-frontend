@@ -118,7 +118,7 @@ export default function Navbar() {
         <div style={{ marginTop: '2rem', paddingTop: '1rem' }}>
           <div style={{ borderTop: '0.5px solid rgba(184,150,12,0.2)', paddingTop: '1.2rem' }}>
             <div style={{ fontSize: '0.58rem', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '0.8rem' }}>Follow Us</div>
-            <div style={{ display: 'flex', gap: '0.6rem' }}>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
               {socialLinks.map(s => (
                 <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" title={s.label}
                   style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'none', display: 'flex', alignItems: 'center' }}
