@@ -22,36 +22,36 @@ export default function ProductsPage() {
   const pageSize = 20;
   const totalPages = Math.ceil(totalCount / pageSize);
 
+  // Reset to page 1 when search/filter/sort changes
   useEffect(() => {
-  setLoading(true);
-  Promise.all([
-    api.get(`/api/products/?page=${currentPage}`),
-    api.get('/api/products/categories/'),
-  ]).then(([productsRes, categoriesRes]) => {
-    setProducts(productsRes.data.results || productsRes.data);
-    setTotalCount(productsRes.data.count || 0);
-    setCategories(categoriesRes.data.results || categoriesRes.data);
-  }).catch(() => {
-    setProducts([]);
-    setCategories([]);
-  }).finally(() => setLoading(false));
-}, [currentPage]);
+    setCurrentPage(1);
+  }, [search, filter, sort]);
 
-  const filtered = products
-    .filter(p => {
-      const matchCat = filter === 'all' || p.category?.slug === filter;
-      const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
-      return matchCat && matchSearch;
-    })
-    .sort((a, b) => {
-      if (sort === 'price-asc') return Number(a.price) - Number(b.price);
-      if (sort === 'price-desc') return Number(b.price) - Number(a.price);
-      return 0;
-    });
+  useEffect(() => {
+    setLoading(true);
+
+    const params = new URLSearchParams();
+    params.append('page', currentPage.toString());
+    if (filter !== 'all') params.append('category', filter);
+    if (search) params.append('search', search);
+    if (sort === 'price-asc') params.append('ordering', 'price');
+    if (sort === 'price-desc') params.append('ordering', '-price');
+
+    Promise.all([
+      api.get(`/api/products/?${params.toString()}`),
+      api.get('/api/products/categories/'),
+    ]).then(([productsRes, categoriesRes]) => {
+      setProducts(productsRes.data.results || productsRes.data);
+      setTotalCount(productsRes.data.count || 0);
+      setCategories(categoriesRes.data.results || categoriesRes.data);
+    }).catch(() => {
+      setProducts([]);
+      setCategories([]);
+    }).finally(() => setLoading(false));
+  }, [currentPage, filter, search, sort]);
 
   return (
     <>
-      {/* ── ALL STYLES IN ONE PLACE ── */}
       <style>{`
         .products-grid {
           display: grid;
@@ -59,21 +59,21 @@ export default function ProductsPage() {
           gap: 0.8rem;
         }
         @media (max-width: 480px) {
-  .filter-sort-bar {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-  }
-  .search-sort-row {
-    width: 100% !important;
-  }
-  .search-sort-row input {
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-  .search-sort-row select {
-    width: 100% !important;
-  }
-}
+          .filter-sort-bar {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+          }
+          .search-sort-row {
+            width: 100% !important;
+          }
+          .search-sort-row input {
+            width: 100% !important;
+            box-sizing: border-box !important;
+          }
+          .search-sort-row select {
+            width: 100% !important;
+          }
+        }
         @media (min-width: 768px) {
           .products-grid { grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
         }
@@ -123,14 +123,14 @@ export default function ProductsPage() {
           </div>
           <div className="search-sort-row" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', minWidth: 0, flexShrink: 1 }}>
             <input type="text" placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)}
-    style={{ padding: '0.45rem 0.8rem', border: '0.5px solid #e8e4de', background: '#faf8f5', color: '#111', fontSize: '0.78rem', outline: 'none', fontFamily: 'Jost, sans-serif', width: '120px', minWidth: 0 }} />
-  <select value={sort} onChange={e => setSort(e.target.value)}
-    style={{ padding: '0.45rem 0.5rem', border: '0.5px solid #e8e4de', background: '#fff', color: '#111', fontSize: '0.72rem', outline: 'none', fontFamily: 'Jost, sans-serif', cursor: 'pointer', minWidth: 0 }}>
-    <option value="newest">Sort: Newest</option>
-    <option value="price-asc">Price: Low to High</option>
-    <option value="price-desc">Price: High to Low</option>
-  </select>
-</div>
+              style={{ padding: '0.45rem 0.8rem', border: '0.5px solid #e8e4de', background: '#faf8f5', color: '#111', fontSize: '0.78rem', outline: 'none', fontFamily: 'Jost, sans-serif', width: '120px', minWidth: 0 }} />
+            <select value={sort} onChange={e => setSort(e.target.value)}
+              style={{ padding: '0.45rem 0.5rem', border: '0.5px solid #e8e4de', background: '#fff', color: '#111', fontSize: '0.72rem', outline: 'none', fontFamily: 'Jost, sans-serif', cursor: 'pointer', minWidth: 0 }}>
+              <option value="newest">Sort: Newest</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -154,7 +154,7 @@ export default function ProductsPage() {
               ))}
             </div>
           </>
-        ) : filtered.length === 0 ? (
+        ) : products.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '5rem' }}>
             <p style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '1.5rem', color: '#ccc', fontStyle: 'italic', marginBottom: '0.5rem' }}>No products found</p>
             <p style={{ fontSize: '0.78rem', color: '#aaa', letterSpacing: '0.1em' }}>Try a different filter or search term</p>
@@ -162,10 +162,10 @@ export default function ProductsPage() {
         ) : (
           <>
             <p style={{ fontSize: '0.65rem', color: '#aaa', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '2rem', fontFamily: "'Jost', sans-serif" }}>
-              {filtered.length} item{filtered.length !== 1 ? 's' : ''} found
+              {totalCount} item{totalCount !== 1 ? 's' : ''} found
             </p>
             <div className="products-grid">
-              {filtered.map((product, i) => (
+              {products.map((product, i) => (
                 <ProductCard key={product.id} product={product} index={i} />
               ))}
             </div>
@@ -196,16 +196,10 @@ export default function ProductsPage() {
           </>
         )}
       </div>
+
       {/* Footer */}
       <footer style={{ background: '#111', borderTop: '0.5px solid rgba(184,150,12,0.2)', padding: '2rem 6vw', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.95rem', fontWeight: 300, letterSpacing: '0.4em', lineHeight: 1 }}>
-            <span style={{ color: '#fff' }}>BRAND</span>{' '}<span style={{ color: '#b8960c' }}>BAZAR</span>
-          </div>
-          <div style={{ width: '70px', height: '0.5px', background: 'linear-gradient(to right, transparent, #b8960c, transparent)', margin: '5px auto', display: 'block' }} />
-          <div style={{ fontSize: '0.42rem', letterSpacing: '0.45em', textTransform: 'uppercase', color: '#b8960c' }}>BY MIRSA</div>
-        </div>
-        <div style={{ fontSize: '0.65rem', color: '#444', letterSpacing: '0.1em' }}>Pakistan&#39;s Most Trusted Multi-Brand Fashion Store</div>
+        <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.7)', letterSpacing: '0.1em' }}>Pakistan&#39;s Most Trusted Multi-Brand Fashion Store</div>
       </footer>
     </>
   );

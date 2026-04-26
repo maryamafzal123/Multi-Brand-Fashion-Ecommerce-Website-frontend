@@ -82,9 +82,9 @@ export default function CartPage() {
     outline: 'none', fontFamily: 'Jost, sans-serif',
   };
 
-  const delivery = 200;
-  const subtotal = getTotalPrice();
-  const total = subtotal + (subtotal >= 3000 ? 0 : delivery);
+const delivery = 250;
+const subtotal = getTotalPrice();
+const total = subtotal + delivery;
 
   return (
     <>
@@ -288,9 +288,8 @@ export default function CartPage() {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.6rem', fontSize: '0.85rem' }}>
                 <span style={{ color: '#8b5e3c' }}>Delivery</span>
-                <span style={{ color: subtotal >= 3000 ? '#10b981' : '#111' }}>{subtotal >= 3000 ? 'FREE' : `Rs. ${delivery}`}</span>
+                <span>Rs. {delivery}</span>
               </div>
-              {subtotal >= 3000 && <p style={{ fontSize: '0.72rem', color: '#10b981', marginBottom: '0.6rem' }}>✓ You qualify for free delivery!</p>}
               <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '1rem', borderTop: '1px solid rgba(196,169,125,0.2)', fontFamily: "'Jost', sans-serif", fontSize: '1rem', fontWeight: 500 }}>
                 <span>Total</span>
                 <span style={{ color: '#b8960c' }}>Rs. {total.toLocaleString()}</span>
@@ -304,15 +303,8 @@ export default function CartPage() {
         </div>
       </div>
 
-      <footer style={{ background: '#111', borderTop: '0.5px solid rgba(184,150,12,0.2)', padding: '1.5rem 6vw', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.9rem', fontWeight: 300, letterSpacing: '0.4em', textTransform: 'uppercase' }}>
-            <span style={{ color: '#fff' }}>BRAND </span><span style={{ color: '#b8960c' }}>BAZAR</span>
-          </div>
-          <div style={{ height: '0.5px', background: 'linear-gradient(to right, transparent, #b8960c, transparent)', margin: '3px auto', width: '70px' }} />
-          <div style={{ fontSize: '0.4rem', letterSpacing: '0.35em', color: '#b8960c', textTransform: 'uppercase' }}>BY MIRSA</div>
-        </div>
-        <div style={{ fontSize: '0.65rem', color: '#444', letterSpacing: '0.1em', fontStyle: 'normal' }}>© 2026 Brand Bazar. All rights reserved.</div>
+       <footer style={{ background: '#111', borderTop: '0.5px solid rgba(184,150,12,0.2)', padding: '2rem 6vw', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+        <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.7)', letterSpacing: '0.1em' }}>© 2026 Brand Bazar. All rights reserved.</div>
       </footer>
     </>
   );

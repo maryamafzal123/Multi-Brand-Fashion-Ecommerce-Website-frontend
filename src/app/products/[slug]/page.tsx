@@ -122,13 +122,13 @@ export default function ProductDetailPage() {
         .product-detail-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 5vw;
+          gap: 2vw;
           padding: 2rem 6vw 7rem;
         }
         .product-main-image {
-          height: 580px;
-        }
-        @media (max-width: 767px) {
+  height: 580px;
+}
+         @media (max-width: 767px) {
           .product-detail-grid {
             grid-template-columns: 1fr !important;
             padding: 1rem 5vw 4rem !important;
@@ -156,7 +156,7 @@ export default function ProductDetailPage() {
       <div style={{ paddingTop: '72px', minHeight: '100vh', background: '#faf8f5' }}>
 
         {/* Breadcrumb */}
-        <div style={{ padding: '1.5rem 6vw', fontSize: '0.72rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#b8960c' }}>
+        <div style={{ padding: '1.5rem 4vw', fontSize: '0.72rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#b8960c' }}>
           <Link href="/" style={{ color: '#b8960c', textDecoration: 'none' }}>Home</Link>
           {' / '}
           <Link href="/products" style={{ color: '#b8960c', textDecoration: 'none' }}>Collection</Link>
@@ -178,9 +178,22 @@ export default function ProductDetailPage() {
             }}>
               {selectedImage ? (
                 isVideo(selectedImage) ? (
-                  <video src={selectedImage} controls loop playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                ) : (
-                  <Image src={selectedImage} alt={product.name} fill style={{ objectFit: 'cover' }} />
+<video 
+  src={selectedImage} 
+  controls 
+  loop 
+  playsInline
+  controlsList="nodownload"
+  style={{ 
+    width: '100%', 
+    height: '580px', 
+    objectFit: 'contain',
+    display: 'block',
+  }} 
+  onMouseEnter={e => (e.currentTarget as HTMLVideoElement).setAttribute('controls', 'true')}
+  onMouseLeave={e => (e.currentTarget as HTMLVideoElement).setAttribute('controls', 'true')}
+/>                ) : (
+                 <Image src={selectedImage} alt={product.name} fill style={{ objectFit: 'contain' }} />
                 )
               ) : (
                 <span style={{ fontSize: '8rem', opacity: 0.4 }}>👗</span>
@@ -290,7 +303,7 @@ export default function ProductDetailPage() {
             </a>
 
             <div style={{ marginTop: '2rem', borderTop: '1px solid rgba(196,169,125,0.2)', paddingTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-              {[{ icon: '🚚', text: 'Free delivery on orders over Rs. 3,000' }, { icon: '↩️', text: 'Easy returns within 7 days' }, { icon: '✨', text: 'Premium quality guaranteed' }].map((item) => (
+              {[{ icon: '🚚', text: 'Delivered to your doorstep nationwide' }, { icon: '↩️', text: 'Easy returns within 7 days' }, { icon: '✨', text: 'Premium quality guaranteed' }].map((item) => (
                 <div key={item.text} style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', fontSize: '0.82rem', color: '#7a6458' }}>
                   <span>{item.icon}</span><span>{item.text}</span>
                 </div>
@@ -303,14 +316,7 @@ export default function ProductDetailPage() {
       <RelatedProducts categorySlug={product.category?.slug} currentSlug={product.slug} />
 
       <footer style={{ background: '#111', borderTop: '0.5px solid rgba(184,150,12,0.2)', padding: '2rem 6vw', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.95rem', fontWeight: 300, letterSpacing: '0.4em', lineHeight: 1 }}>
-            <span style={{ color: '#fff' }}>BRAND</span>{' '}<span style={{ color: '#b8960c' }}>BAZAR</span>
-          </div>
-          <div style={{ width: '70px', height: '0.5px', background: 'linear-gradient(to right, transparent, #b8960c, transparent)', margin: '5px auto' }} />
-          <div style={{ fontSize: '0.42rem', letterSpacing: '0.45em', textTransform: 'uppercase', color: '#b8960c' }}>BY MIRSA</div>
-        </div>
-        <div style={{ fontSize: '0.65rem', color: '#444', letterSpacing: '0.1em' }}>© 2026 Brand Bazar. All rights reserved.</div>
+        <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.7)', letterSpacing: '0.1em' }}>© 2026 Brand Bazar. All rights reserved.</div>
       </footer>
     </>
   );

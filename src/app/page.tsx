@@ -35,7 +35,7 @@ export default function HomePage() {
   const marqueeItems = [
     'Nishat', '✦', 'Alkaram', '✦', 'Breeze', '✦',
     'Orient', '✦', 'Sapphire', '✦', 'Khaadi', '✦',
-    'Free Delivery Over Rs.3000', '✦', 'COD Available', '✦',
+    'Regalia', '✦', 'Pareesa', '✦',
     'Nationwide Delivery', '✦', '100% Authentic', '✦',
   ];
 
@@ -197,7 +197,7 @@ export default function HomePage() {
           </h1>
           <div style={{ width: '200px', height: '1px', background: 'linear-gradient(to right, transparent, #b8960c, transparent)', margin: '1.5rem auto 2rem' }} />
           <p style={{ fontSize: '0.88rem', color: '#777', letterSpacing: '0.05em', lineHeight: 1.9, marginBottom: '3rem', maxWidth: '440px', textAlign: 'center', margin: '0 auto 3rem' }}>
-            Nishat · Alkaram · Breeze · Orient · Sapphire · Khaadi<br />
+            Nishat · Alkaram · Breeze · Orient · Regalia · Pareesa · Sapphire · Khaadi
             Shop premium unstitched from Pakistan&apos;s top brands — curated, authentic, delivered to your door.
           </p>
           <div className="hero-buttons">
@@ -279,7 +279,7 @@ export default function HomePage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
               {[
                 { title: '100% Authentic', desc: 'Direct from authorised dealers — every piece is genuine' },
-                { title: 'All Top Brands', desc: 'Nishat, Breeze, Alkaram, Gul Ahmed, Sapphire, Khaadi & more' },
+                { title: 'All Top Brands', desc: 'Nishat, Breeze, Alkaram, Pareesa, Sapphire, Regalia, Khaadi & more' },
                 { title: 'Nationwide Delivery', desc: 'Fast & reliable delivery across all of Pakistan — COD available' },
                 { title: 'Easy Returns', desc: '7-day hassle-free returns — shop with complete confidence' },
               ].map(item => (
@@ -297,23 +297,10 @@ export default function HomePage() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="footer-main" style={{ background: '#111', borderTop: '0.5px solid rgba(184,150,12,0.2)', padding: '1.5rem 6vw 1.5rem' }}>
-        {/* Logo */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '2.5rem' }}>
-          <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.95rem', fontWeight: 300, letterSpacing: '0.5em', lineHeight: 1 }}>
-            <span style={{ color: '#fff' }}>BRAND</span>{' '}<span style={{ color: '#b8960c' }}>BAZAR</span>
-          </div>
-    <div style={{ width: '70px', height: '0.5px', background: 'linear-gradient(to right, transparent, #b8960c, transparent)', margin: '5px auto', display: 'block' }} />
-          <div style={{ fontSize: '0.42rem', letterSpacing: '0.45em', textTransform: 'uppercase', color: '#b8960c' }}>BY MIRSA</div>
-        </div>
-
-        {/* Bottom row */}
-        <div style={{ borderTop: '0.5px solid #222', paddingTop: '1.5rem' }}>
-          <div className="footer-bottom">
-            <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.62rem', letterSpacing: '0.1em' }}>© 2026 Brand Bazar by Mirsa. All rights reserved.</div>
-          </div>
-        </div>
+      <footer style={{ background: '#111', borderTop: '0.5px solid rgba(184,150,12,0.2)', padding: '2rem 6vw', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+        <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.7)', letterSpacing: '0.1em' }}>© 2026 Brand Bazar. All rights reserved.</div>
       </footer>
     </>
   );
 }
+ 

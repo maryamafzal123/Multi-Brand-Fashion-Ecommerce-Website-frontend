@@ -12,7 +12,10 @@ const isVideo = (url: string) => /\.(mp4|mov|avi|webm|mkv)$/i.test(url);
 
 const fixCloudinaryUrl = (url: string) => {
   if (!url) return url;
-  return url.replace('/raw/upload/', '/image/upload/');
+  if (isVideo(url)) {
+    return url.replace('/raw/upload/', '/video/upload/');
+  }
+  return url; // images work fine with raw/upload
 };
 
 export default function ProductCard({ product, index = 0 }: Props) {
@@ -66,18 +69,30 @@ if (added) {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           {product.primary_image ? (
-            isVideo(product.primary_image) ? (
-              <video
-                src={fixCloudinaryUrl(product.primary_image)}
-                muted
-                loop
-                playsInline
-                autoPlay
-                style={{
-                  position: 'absolute', inset: 0,
-                  width: '100%', height: '100%',
-                  objectFit: 'cover',
-                }}
+           isVideo(product.primary_image) ? (
+          <video
+            src={fixCloudinaryUrl(product.primary_image)}
+            muted
+            playsInline
+                preload="metadata"
+               // AFTER (correct)
+              poster={(() => {
+                const fixed = fixCloudinaryUrl(product.primary_image);
+                return fixed
+                  .replace('/video/upload/', '/video/upload/so_0,f_jpg/')
+                  .replace(/\.(mp4|mov|avi|webm|mkv)$/i, '.jpg');
+              })()}
+            style={{
+              position: 'absolute', inset: 0,
+              width: '100%', height: '100%',
+              objectFit: 'cover',
+            }}
+            onMouseEnter={e => (e.currentTarget as HTMLVideoElement).play()}
+            onMouseLeave={e => {
+              const v = e.currentTarget as HTMLVideoElement;
+              v.pause();
+              v.currentTime = 0;
+            }}
               />
             ) : (
               <Image
