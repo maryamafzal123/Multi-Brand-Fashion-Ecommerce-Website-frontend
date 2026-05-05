@@ -72,21 +72,8 @@ export default function ContactPage() {
       </div>
 
       {/* Footer */}
-      <footer style={{
-        background: '#111', borderTop: '0.5px solid rgba(184,150,12,0.2)',
-        padding: '2rem 6vw', display: 'flex',
-        alignItems: 'center', justifyContent: 'space-between',
-        flexWrap: 'wrap', gap: '1rem',
-      }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '0.9rem', fontWeight: 300, letterSpacing: '0.4em', textTransform: 'uppercase' }}>
-            <span style={{ color: '#fff' }}>BRAND </span>
-            <span style={{ color: '#b8960c' }}>BAZAR</span>
-          </div>
-          <div style={{ height: '0.5px', background: 'linear-gradient(to right, transparent, #b8960c, transparent)', margin: '3px auto', width: '70px' }} />
-          <div style={{ fontSize: '0.4rem', letterSpacing: '0.35em', color: '#b8960c', textTransform: 'uppercase' }}>BY MIRSA</div>
-        </div>
-        <div style={{ fontSize: '0.65rem', color: '#444', letterSpacing: '0.1em' }}>© 2026 Brand Bazar. All rights reserved.</div>
+      <footer style={{ background: '#111', borderTop: '0.5px solid rgba(184,150,12,0.2)', padding: '2rem 6vw', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+        <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.7)', letterSpacing: '0.1em' }}>Pakistan&#39;s Most Trusted Multi-Brand Fashion Store</div>
       </footer>
     </>
   );
